@@ -1,0 +1,23 @@
+NAME="html2ps"
+VERSION=1.0b7
+RELEASE=1
+CATEGORY="Text"
+SUMMARY="HTML to PostScript converter"
+DESCRIPTION="Perl script for converting HTML to PostScript."
+HOMEPAGE="http://user.it.uu.se/~jan/html2ps.html"
+SRC_URI="http://user.it.uu.se/~jan/${NAME}-${VERSION}.tar.gz"
+
+RESTRICT="diff"
+
+html2ps_REQUIRES="ghostscript ImageMagick perl perl_vendor perl-Image-Magick texlive"
+
+src_compile() { :; }
+
+src_install() {
+	cd ${S}
+	dodir /usr
+	echo -ne "y\ny\n${D}/usr\n/usr/share/texmf/tex/generic/hyphen/hyphen.tex\n\n" | ./install
+	sed -i -e "s|${D}||g" ${D}/usr/bin/html2ps
+
+	dobin contrib/xhtml2ps/xhtml2ps
+}
