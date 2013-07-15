@@ -1,0 +1,13 @@
+--- origsrc/html2ps-1.0b7/contrib/xhtml2ps/xhtml2ps	2010-05-07 06:28:01.000000000 -0500
++++ src/html2ps-1.0b7/contrib/xhtml2ps/xhtml2ps	2013-07-14 21:22:28.378036800 -0500
+@@ -804,8 +804,8 @@
+   array set stusr {
+     command     "html2ps"
+     checker     "weblint -x Netscape"
+-    viewer      "ghostview -magstep -2 -a4"
+-    printcmd    "lp"
++    viewer      "gv -magstep -2 -a4"
++    printcmd    "lpr"
+     filepcmd    "exec cp"
+     orientation " "
+     colonnes    " "

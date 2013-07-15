@@ -1,23 +1,49 @@
 NAME="html2ps"
 VERSION=1.0b7
-RELEASE=1
+RELEASE=2
 CATEGORY="Text"
 SUMMARY="HTML to PostScript converter"
 DESCRIPTION="Perl script for converting HTML to PostScript."
 HOMEPAGE="http://user.it.uu.se/~jan/html2ps.html"
 SRC_URI="http://user.it.uu.se/~jan/${NAME}-${VERSION}.tar.gz"
 
-RESTRICT="diff"
+PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/html2ps.git/plain/html2ps-1.0b7-Remove-deprecated-variable.patch
+	1.0b7-config.patch
+"
 
-html2ps_REQUIRES="ghostscript ImageMagick perl perl_vendor perl-Image-Magick texlive"
+PKG_NAMES="${NAME} x${NAME}"
+html2ps_REQUIRES="ghostscript ImageMagick jpeg perl perl-HTTP-Cookies perl-HTTP-Message perl-Image-Magick perl-LWP texlive texlive-collection-basic"
+html2ps_CONTENTS="--exclude=xhtml2ps* etc/ usr/"
+xhtml2ps_REQUIRES="cygutils-extra gv html2ps"
+xhtml2ps_CONTENTS="usr/bin/xhtml2ps usr/share/applications/ usr/share/doc/xhtml2ps/"
+
+# files are overwritten in srcdir
+RESTRICT="diff"
 
 src_compile() { :; }
 
 src_install() {
-	cd ${S}
-	dodir /usr
-	echo -ne "y\ny\n${D}/usr\n/usr/share/texmf/tex/generic/hyphen/hyphen.tex\n\n" | ./install
-	sed -i -e "s|${D}||g" ${D}/usr/bin/html2ps
+	local hyphen_tex=$(kpsewhich -subdir=hyphen hyphen.tex)
 
+	cd ${S}
+	dodir /etc /usr/bin /usr/share/doc/html2ps /usr/share/man/man{1,5}
+	echo -ne "\
+y\n\
+n\n\
+${D}/usr/bin\n\
+${D}/etc\n\
+${D}/usr/share/man/man1\n\
+${D}/usr/share/man/man5\n\
+${hyphen_tex}\n\
+${D}/usr/share/doc/html2ps\n\
+\n" | ./install
+	sed -i -e "s|${D}||g" ${D}/usr/bin/html2ps ${D}/etc/html2psrc ${D}/usr/share/man/man*/*
+	make_etc_defaults /etc/html2psrc
+
+	# xhtml2ps
 	dobin contrib/xhtml2ps/xhtml2ps
+	make_desktop_entry xhtml2ps "X-html2ps" "" "Utility"
+	docinto /xhtml2ps
+	dodoc contrib/xhtml2ps/{LICENSE,README}
 }
