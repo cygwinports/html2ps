@@ -6,11 +6,12 @@ SUMMARY="HTML to PostScript converter"
 DESCRIPTION="Perl script for converting HTML to PostScript."
 HOMEPAGE="http://user.it.uu.se/~jan/html2ps.html"
 SRC_URI="http://user.it.uu.se/~jan/${NAME}-${VERSION}.tar.gz"
-
 PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/html2ps.git/plain/html2ps-1.0b7-Remove-deprecated-variable.patch
 	1.0b7-config.patch
 "
+
+ARCH=noarch
 
 PKG_NAMES="${NAME} x${NAME}"
 html2ps_REQUIRES="ghostscript ImageMagick jpeg perl perl-HTTP-Cookies perl-HTTP-Message perl-Image-Magick perl-LWP texlive texlive-collection-basic"
